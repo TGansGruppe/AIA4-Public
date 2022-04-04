@@ -1,5 +1,5 @@
 # AIA4
-AIA4 is a drastic redesign of the AIA Lang. It reverts back to the simplicity of AIA 1
+AIA4 is a drastic redesign of the AIA Lang. It reverts back to the simplicity of AIA 1. **NOTE** Development on AIA4 has ceised since we have joint forces with the JERAN FOUNDATION to work on SIA and the VERA Project, this decision was made by new manangement we decided to move away from our old projects. We sincerely hope that someone can find a use for this!
 
 # Source
 AIA4 goes back to more assembly like code found in AIA1. Source files

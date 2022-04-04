@@ -1,0 +1,7 @@
+@lnk_dat "counter.aiad"
+
+!DataHelper.createInt(new byte[]{0x0, 0x1, 0xaa, 0x34})\
+set $0 0x0
+set $4 0x1425
+cmp $0 $4
+!SystemLogger.errln("Couldnt do something")\

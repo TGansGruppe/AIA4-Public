@@ -1,0 +1,197 @@
+*include source "maths.aia"
+.start
+
+; data_utils.aia
+; Utility functions for converting data.
+;
+; THIS FILE IS PART OF THE AIA4 STDLIB
+; LICENSED UNDER ISC LICENSE
+; COPYRIGHT (C) 2021 GansGruppe
+; ------------------------------------
+
+
+
+; description: Converts a String to an Integer.
+; memory:      Uses default memory from $0-$8.
+;              Data at these addresses is saved and later restored.
+; parameter:   Expects start address for string in register $8 and end in $9
+;              Result is loaded to accumulator
+; author:      0x1905
+:strToInt
+  ; Store old data
+  push $0
+  push $1
+  push $2
+  push $3
+  push $4
+  push $5
+  push $6
+  push $7
+  push $8
+
+  ; Set our operation Data
+  set $0 0x0  ; Char Buffer
+  set $1 0x0  ; Set the char buffer to address $0
+  cpr $8 0x2  ; Copy start address to 0x2 (used as iterator)
+  cpr $9 0x3  ; Copy end address to 0x3
+  set $4 0x1  ; incrementor
+  set $5 0x0  ; Result Buffer
+  set $6 0x30 ; Char  Decrementor
+  set $7 0xa  ; Multiplier
+  set $8 0x2f ; Check helper
+  
+  ; Loop for Converting
+  :strToIntLP
+    pcpm $2 $1 ; Copy next digit to Char Buffer
+    
+    ; Format Check #1
+    cmp $0 $8       ; Check if the Char is ASCII 0x2f or lower
+    je _strToIntRET
+    jl _strToIntRET
+    
+    sub $0 $6  ; Convert Char to Int
+    cpr $1 $0  ; Copy
+    
+    ; Format Check #2
+    cmp $8 $0       ; Check if the converted digit is no larger than 9
+    je _strToIntRET
+    jl _strToIntRET
+    
+    mul $5 $7  ; Multiply ResultBuffer by 10
+    cpr $1 $5  ; Copy
+    add $5 $0  ; Add current digit
+    cpr $1 $5  ; Copy
+    
+    add $4 $2  ; Increment iterator
+    cpr $1 $2  ; Copy
+    cmp $4 $3  ; Check if in bounds
+    
+    ; Continue Looping if in bounds
+    jl _strToIntLP
+    
+    :strToIntRET
+      sreg $1 $5 ; Save conversion result to accumulator
+      
+      ; Restore old data
+      pop $8
+      pop $7
+      pop $6
+      pop $5
+      pop $4
+      pop $3
+      pop $2
+      pop $1
+      pop $0
+      
+      ret
+
+
+; description: Converts a String-Digit to a number
+; memory:      Uses default memory from $0-$1. Data is saved and restored
+;              The result is left within the accumulator
+; parameter:   Data Expected in Register $8
+; author:      0x1905
+:digitToNumber
+  push $0 ; Save Data
+  push $1
+  
+  ; Convert
+  cpr $8 $0
+  set $1 0x30
+  sub $0 $1
+  
+  pop $1 ; Restore
+  pop $0
+  
+  ret
+
+
+; description: Converts a 32-bit number to a String (unsigned)
+; memory:      Uses default memory from $0-$5. Data is saved to stack
+;              but not automatically restored.
+;              The Result is also stored on the top of the stack.
+; paramter:    Data Expected in register $8
+; author:      0x1111
+:intToString
+  ; Save Data
+  push $0
+  push $1
+  push $2
+  push $3
+  push $4
+  push $5
+
+  ; Write operation data
+  cpr $8 $0   ; Number
+  set $1 0x0  ; Remainder
+  set $2 0xa  ; divisor
+  set $3 0x20 ; Max
+  set $4 0x0  ; Iterator
+  set $5 0x1  ; Incrementor
+  
+  sreg $9 0xa ; Load Divisor for _divisionRemainder
+  
+  ; Increment for first
+  ; add $5 $4
+  ; cpr $1 $4
+  
+  :intToStringLP
+    sreg $8 $0              ; Load Dividend
+    cal _divisionRemainder  ; Calculate Remainder
+    cpr  $1 $1              ; Copy
+    push $1                 ; Save digit
+    div  $0 $2              ; Divide to get next number
+    cpr  $1 $0              ; Copy
+    
+    add $5 $4 ; Increment loop
+    cpr $1 $4 ; copy
+    cmp $4 $3
+    jl _intToStringLP
+  
+  ret
+  
+; description: Determines the number of a String in Memory (Terminated using NULL Byte)
+; memory:      Uses default memory from $0-$5. Data is saved to stack and restored
+;              The Result is stored within register $1
+; paramter:    String Stard-Address expected at register $8
+; author:      0x1905
+:stringLength
+  ; Save Data
+  push $0
+  push $1
+  push $2
+  push $3
+  push $4
+  push $5
+
+  set $0 0x0 ; Terminator
+  cpr $8 $1  ; Start Address/Char Pointer
+  set $2 0x1 ; Incrementor
+  set $3 0x0 ; Length
+  ;   $4 0x0 ; Char Buffer
+  ;   $5 0x4 ; Buffer Pointer
+  
+  :stringLengthLP
+    pcpm $1 $5         ; Copy Char
+    cmp  $4 $0         ; Check if Terminator
+    je _stringLengthRT ; If terminated, return
+    
+    add $2 $1 ; Increment Char Pointer
+    cpr $1 $1 ; Copy
+    
+    add $2 $3 ; Increment Length
+    cpr $1 $3 ; Copy
+    jmp _stringLengthLP
+    
+  :strLengthRT
+    sreg $1 $3 ; Save Result
+    
+    ; Restore Data
+    pop $5
+    pop $4
+    pop $3
+    pop $2
+    pop $1
+    pop $0
+    
+    ret

@@ -1,0 +1,140 @@
+.start
+
+; data_utils.aia
+; Utility functions for calculations
+;
+; THIS FILE IS PART OF THE AIA4 STDLIB
+; LICENSED UNDER ISC LICENSE
+; COPYRIGHT (C) 2021 GansGruppe
+; ------------------------------------
+
+  
+; description: Calculates the remainder of a Integer Division (Modulus)
+; memory:      Uses default memory from $0-$2, previous data
+;              is temporarly saved to stack.
+;              Result is left in accumulator.
+; parameter:   Expects dividend at register $8 and divisor at $9
+; author:      0x1111
+:divisionRemainder
+  ; Save previous data
+  push $0
+  push $1
+  push $2
+  
+  ; Copy paramters
+  cpr $8 0x0 ; dividend
+  cpr $9 0x1 ; divisor
+  ;   $2       division result
+  
+  ; Calculate
+  div $0 $1 ; dividend / divisor
+  cpr $1 $2 ; copy
+  mul $2 $1 ; result * divisor
+  cpr $1 $1 ; copy
+  cpr $8 $0 ; copy dividend
+  sub $0 $1 ; result - dividend
+  
+  ; Write back saved data
+  pop $2
+  pop $1
+  pop $0
+  
+  ret
+  
+
+; description: Calculates the square root of an integer
+; memory:      Uses default memory from $0-$6, previous data
+;              is temporarly saved to stack.
+;              Result is left in accumulator.
+; parameter:   Expects value at register $8
+; author:      0x1905
+:sqrt
+  ; Save Data
+  push $0
+  push $1
+  push $2
+  push $3
+  push $4
+  push $5
+  push $6
+
+  ; Write Operation Data
+  cpr $8 $0  ; N(umber)
+  cpr $8 $1  ; X
+  set $2 0x2 ; Divisor
+  set $3 0x0 ; Iterator
+  set $4 0x1 ; Incrementor
+  ;   $5 ??? ; Limit
+  ;   $6 ??? ; Temp. Buffer
+  
+  ; Calculate Loop Limit
+  div $0 $2
+  cpr $1 $5
+  
+  :sqrtLP
+    push $1 ; Push current value of X to stack
+    
+    div $0 $1 ; Divide n by x
+    cpr $1 $1
+    
+    pop $6    ; Get last value of X
+    add $1 $6 ; add (n/x) and x
+    cpr $1 $1
+  
+    div $1 $2 ; Divide by 2
+    cpr $1 $1
+  
+    ; Loop Incrementor
+    add $3 $4
+    cpr $1 $3
+    cmp $3 $5
+    jl _sqrtLP
+    
+  sreg $1 $1 ; Save Result
+  
+  ; Restore old data
+  pop $6
+  pop $5
+  pop $4
+  pop $3
+  pop $2
+  pop $1
+  pop $0
+  
+  ret
+
+; description: Finds the smaller of two int values
+; memory:      Uses default memory from $0-$2, previous data
+;              is temporarly saved to stack.
+;              Result is left in accumulator.
+; parameter:   Expects the values at registers $8 & $9
+; author:      0x1905
+:min
+  ; Store data
+  push $0
+  push $1
+  
+  ; Grab operation data
+  cpr $8 $0
+  cpr $9 $1
+  
+  ; Compare Values
+  cmp $0 $1
+  je _minFS
+  jl _minFS
+  jg _minLS
+  
+  :minFS
+    sreg $1 $0
+    jmp _minRS
+  
+  :minLS
+    sreg $1 $1
+    jmp _minRS
+  
+  :minRS ; Restores Data
+    pop $1
+    pop $0
+  
+  ret
+

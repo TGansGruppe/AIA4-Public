@@ -1,0 +1,39 @@
+@lnk_dat "counter.aiad"
+
+; ROR-Encode ("ror_encode.aia")
+; Author: 0x1905 , License: N/A
+; Version 1 (final) , Date: 10/11/2021
+; ====================================
+; This is a very simple, yet a bit tricky type of encryption.
+; It works by simply rotating the bits of the ASCII-Value of
+; every single character in the message to the right once, without
+; pushing the right most bit to be the left most.
+;
+; Recommended MU: small message: 256, medium: 1024, large: 4096
+
+set $0 p';' ; Message Terminator
+set $1 0x0  ; curchar
+set $2 0x5  ; counter
+set $3 0x1  ; incr
+set $4 0x1  ; curchar*
+
+std_in $5   ; Get the string to encode
+jmp _loop   ; start encoding
+
+:exit
+stop
+
+:loop
+pcpm $2 $4 ; Copy next char
+cmp $1 $0  ; Check if its the terminator, if so exit
+je _exit
+
+smu $1 $0  ; Copy curchar
+ror $3     ; encode
+cpr $4 $1  ; copy to main mem
+log $1     ; print
+log "\n"
+
+add $3 $2  ; increment counter
+cpr $1 $2
+jmp _loop  ; return to start

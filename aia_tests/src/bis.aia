@@ -1,0 +1,30 @@
+@lnk_dat "counter.aiad"
+
+; Byte Instruction Set Test Program
+
+set $0 0x0ffe8a
+set $1 0x0fea88
+set $2 0x1
+set $3 0x0235
+
+smu $0 $0
+
+and $0 $1
+cpr $4 $4 ; result of "and" test at $000004
+
+or $0 $1
+cpr $4 $5 ; result of "or" test at $000005
+
+xor $0 $1
+cpr $4 $6 ; result of "xor" tset at $000006
+
+ror $1
+cpr $4 $7 ; result of "ror" test at $000007
+
+rol $1
+cpr $4 $8 ; result of "lor" test at $000008
+
+cpb $1 $9 ; result of "cpb" test at $000009
+cmu $0 $a ; result of "cmu" test at $00000a
+
+stop

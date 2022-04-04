@@ -1,0 +1,27 @@
+@lnk_dat "counter.aiad"
+
+;       Err/Exception ID
+;                Message                        Fatal (0 = false ; >= 1 = true)
+sys_err 0x100004 "Testing SYS_ERR Instruction!" BYTE=0
+sreg $e 0x0000ff
+
+set $0 0x0
+set $1 0x1
+set $2 0x1a
+
+:loop
+cmp $0 $2
+je _exit
+
+cal _testRoutine
+
+add $1 $0
+cpr $1 $0
+jmp _loop
+
+:testRoutine
+log "Hi from Test!\n"
+ret
+
+:exit
+stop

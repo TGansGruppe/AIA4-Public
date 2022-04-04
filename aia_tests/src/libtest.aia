@@ -1,0 +1,4 @@
+.start
+:testSubroutine
+    log "This is a simple test subroutine.\n"
+    ret

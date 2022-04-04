@@ -1,0 +1,10 @@
+.start
+@lnk_dat "counter.aiad"
+
+log "Buchstabe: "
+std_in $0
+log "Code: "
+log $0
+log "\n"
+
+stop

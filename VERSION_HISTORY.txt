@@ -1,0 +1,34 @@
+Version History Document
+========================
+
+RELEASE  VERSION DATE OF COMPLETION
+2021-pr1 V0.0.0: [19.07.2021]:
+			 - No information
+		
+		 V0.1.0: [21.07.2021]:
+			 - Basic LangProcessor
+			 - AIAExceptions (Non-Standardised)
+			
+		 V0.2.0: [24.07.2021]:
+			 - Basic Compiler
+			 - Pre Compilers
+			
+		 V0.3.0: [16.07.2021]:
+			 - STDIO IS
+			 - BIS
+			 - Program Debugging
+			 - Revised Compiler
+
+		 V0.4.0: [16.11.2021]:
+             - New Instructions:
+                 	 - Subroutines
+                        - CAL (Call a Subroutine)
+                        - RET (Return from Subroutine)
+                 - Register Manipulation
+                    - SREG (Set Register)
+             - System Errors
+         V0.4.5: [27.12.2021):
+             - Advanced Addressing/Parameters
+             - Reducing Bytecode
+                 - Program Compression
+                 - Minimal Byte Mode (See COMPILER_BYTEMODE.txt or AIA4 Spec. 27-12-2021 Appendix B §3)

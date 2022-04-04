@@ -1,0 +1,19 @@
+BYTECODE-FORMAT: Minimal/Compiler Byte Mode
+
+Compiler Side
+
+Compiler Byte-Mode is used to make programs even smaller, though the source code needs to account for that,
+as hardcoded Data is limited to one size and addresses can not exceed a preset byte-length. The ByteCode is
+prepended by a format byte. The value for Minimal Mode is 0x01, this byte is then followed by the address-space.
+
+Runtime Side
+
+After the Runtime has separated the Data Block and the Program Bytecode it determines which Language Processor
+to use by looking at the format byte. It then sets the Memory Size to the maximum size for the set address-space,
+if it exceeds it.
+
+TL;DR
+
+- Address Length is Limited to a user-set length in bytes
+- Data Size is limited to a singular byte
+- Run in custom Language Processor capable of handling this bytecode format.

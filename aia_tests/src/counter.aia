@@ -1,0 +1,22 @@
+@lnk_dat "counter.aiad"
+@id_define int limit 0x65
+
+log "This is an example program counting up to 100\n"
+
+set $0 0x00 ; counter
+set $1 0x01 ; incrementor
+set $2 #limit
+
+:loop
+   log "I: "
+   log $0
+   log "\n"
+
+   add $0 $1 ; Add the values from addresses $0 and $1 together
+   cpr $1 $0 ; Copy the value of the accumulator to address $0
+
+   cmp $0 $2 ; Check the counter against the limit
+   jl  _loop ; Jump back to the start of the loop if $0 is smaller than 0x65 (0x4d)
+
+   log "Reached 100!\n"
+   stop      ; Stops the program, this is only reached if $0 exceeds 0x64

@@ -1,0 +1,36 @@
+; fibbo.aia ; author: 0x1905
+; AIA R4 v1.1
+*include source !"maths.aia"
+*include source "libtest.aia"
+.start
+
+@lnk_dat "counter.aiad"
+
+std_in $6
+log "This program prints out the fibonacci sequence (loops 0xffff times)\n"
+cal _testSubroutine
+
+set $0 0x1    ; prev
+set $1 0x0    ; next
+set $2 0x0    ; temp
+set $3 0x30   ; limit
+set $4 0x0    ; counter
+set $5 0x1    ; incr
+
+:loop
+  log "Num: "
+  log 0x0
+  log "\n"
+  
+  add $0 $1
+  cpr $1 $2 ; temp = prev + next
+  
+  cpm $1 $0
+  cpm $2 $1
+
+  add $5 $4
+  cpr $1 $4
+  cmp $4 $3
+  jl _loop
+  
+  stop
